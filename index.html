@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title></title>
+    <style>
+    	*{
+    		padding: 0;
+    		margin: 0;
+    	}
+    	.box{
+    		background: url(img/p3.jpg);
+    		background-size:100%;
+    	}
+    </style>
+</head>
+<body>
+	<div class="box">
+		<canvas id="canvs"></canvas>
+	</div>
+	
+	<script src="js/jquery2.0.0.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		window.onload = function(){
+			var wid = $(document).width();
+			//console.log(wid);
+			
+			$('.box').css('width',wid).css('height',wid);
+			
+			var cvs = document.getElementById('canvs');
+			cvs.width = wid;
+			cvs.height = wid;
+			//console.log(wid)
+			var ctx = cvs.getContext('2d');
+			
+			
+			ctx.beginPath();
+			ctx.fillStyle = '#999';
+			ctx.fillRect(0,0,cvs.width,cvs.height);
+			ctx.fill();
+			ctx.closePath();
+			
+			ctx.globalCompositeOperation = 'destination-out';
+			
+			cvs.addEventListener('touchstart',function(e){
+				e.preventDefault();
+				cvs.addEventListener('touchmove',function(e){
+					e.preventDefault();
+					ctx.beginPath();
+					ctx.fillStyle = '#f00';
+					ctx.arc(e.targetTouches[0].clientX,e.targetTouches[0].clientY,20,0,2*Math.PI);
+					ctx.fill();
+					
+					ctx.closePath();
+				});
+				cvs.addEventListener('touchend',function(e){
+					var num = 0;
+					var datas = ctx.getImageData(0,0,cvs.width,cvs.height);
+					for(var i=0;i<datas.data.length;i++){
+						if(datas.data[i] == 0){
+							num ++;
+						}
+					};
+					
+					if(num >= datas.data.length*0.7){
+						ctx.fillRect(0,0,cvs.width,cvs.height);
+					}
+				})
+			})
+			
+			
+			
+		}
+	</script>
+</body>
+</html>
